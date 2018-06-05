@@ -165,6 +165,28 @@ move_chrome_cache()
 }
 
 #
+# Yandex Browser Cache
+#
+move_yandex_browser_cache()
+{
+    if [ -d "/Users/${USER}/Library/Caches/Yandex/YandexBrowser" ]; then
+        if user_response "${MSG_PROMPT_FOUND}" 'Yandex'"${MSG_MOVE_CACHE}" ; then
+            close_app "Yandex Browser"
+            /bin/mkdir -p /tmp/Yandex
+            /bin/mv ~/Library/Caches/Yandex/* /tmp/Yandex
+            /bin/mkdir -pv "${USERRAMDISK}"/Yandex
+            /bin/mv /tmp/Yandex/* "${USERRAMDISK}"/Yandex
+            /bin/ln -v -s -f "${USERRAMDISK}"/Yandex ~/Library/Caches/Yandex/
+            /bin/rm -rf /tmp/Yandex
+            # and let's create a flag for next run that we moved the cache.
+            echo "";
+        fi
+    else
+        echo "No Yandex Browser folder has been found. Skipping."
+    fi
+}
+
+#
 # Chrome Canary Cache
 #
 move_chrome_chanary_cache()
@@ -360,6 +382,7 @@ main() {
     mk_ram_disk
     # move the caches
     move_chrome_cache
+    move_yandex_browser_cache
     move_safari_cache
     move_idea_cache
     move_ideace_cache
